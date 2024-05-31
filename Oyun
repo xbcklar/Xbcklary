@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pac-Man Game</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+        }
+
+        #game-container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+        }
+
+        canvas {
+            border: 2px solid #fff;
+            display: block;
+            background-color: #000;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 600;
+        canvas.height = 600;
+
+        const pacMan = {
+            x: 50,
+            y: 50,
+            radius: 20,
+            angle1: 0.25,
+            angle2: 1.75,
+            speed: 5,
+            direction: 'right',
+        };
+
+        function drawPacMan() {
+            ctx.beginPath();
+            ctx.arc(pacMan.x, pacMan.y, pacMan.radius, pacMan.angle1 * Math.PI, pacMan.angle2 * Math.PI);
+            ctx.lineTo(pacMan.x, pacMan.y);
+            ctx.fillStyle = 'yellow';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function updatePacMan() {
+            switch (pacMan.direction) {
+                case 'right':
+                    pacMan.x += pacMan.speed;
+                    if (pacMan.x + pacMan.radius > canvas.width) pacMan.x = canvas.width - pacMan.radius;
+                    break;
+                case 'left':
+                    pacMan.x -= pacMan.speed;
+                    if (pacMan.x - pacMan.radius < 0) pacMan.x = pacMan.radius;
+                    break;
+                case 'up':
+                    pacMan.y -= pacMan.speed;
+                    if (pacMan.y - pacMan.radius < 0) pacMan.y = pacMan.radius;
+                    break;
+                case 'down':
+                    pacMan.y += pacMan.speed;
+                    if (pacMan.y + pacMan.radius > canvas.height) pacMan.y = canvas.height - pacMan.radius;
+                    break;
+            }
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        function gameLoop() {
+            clearCanvas();
+            drawPacMan();
+            updatePacMan();
+            requestAnimationFrame(gameLoop);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            switch (e.key) {
+                case 'ArrowRight':
+                    pacMan.direction = 'right';
+                    pacMan.angle1 = 0.25;
+                    pacMan.angle2 = 1.75;
+                    break;
+                case 'ArrowLeft':
+                    pacMan.direction = 'left';
+                    pacMan.angle1 = 1.25;
+                    pacMan.angle2 = 0.75;
+                    break;
+                case 'ArrowUp':
+                    pacMan.direction = 'up';
+                    pacMan.angle1 = 1.75;
+                    pacMan.angle2 = 1.25;
+                    break;
+                case 'ArrowDown':
+                    pacMan.direction = 'down';
+                    pacMan.angle1 = 0.75;
+                    pacMan.angle2 = 0.25;
+                    break;
+            }
+        });
+
+        gameLoop();
+    </script>
+</body>
+</html>
